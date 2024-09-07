@@ -24,7 +24,7 @@ const CompetitionCard = ({ item }) => {
         </Text>
         <div className="flex justify-end">
           <Text mt={8} size="sm" c="dimmed">
-            Participant: <span className="">{item?.participant}</span>
+            Participant: <span className="">{item?.participant} (Sol)</span>
           </Text>
         </div>
 

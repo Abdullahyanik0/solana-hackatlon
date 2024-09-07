@@ -4,12 +4,15 @@ import { FileUploader } from "react-drag-drop-files";
 import { LuMousePointerClick } from "react-icons/lu";
 import SingleMemeComponent from "@/components/SingleMemeComponent";
 import { useRouter } from "next/router";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 const MemeMaker = () => {
   const [file, setFile] = useState("");
   const [files, setFiles] = useState("");
   const [img, setImg] = useState(null);
   const [imgQuery, setImgQuery] = useState(false);
+
+  const { publicKey } = useWallet();
 
   const fileTypes = ["JPG", "PNG", "GIF"];
 
@@ -80,6 +83,7 @@ const MemeMaker = () => {
   return (
     <div>
       <div className="flex flex-col items-center mt-20 w-full">
+       
         <div className="w-11/12 max-w-5xl mt-16 flex flex-col items-center"></div>
         <h1 className="font-display text-jacarta-700  text-3xl text-center dark:text-white">
           {file ? "Make a meme" : "Upload an image to get started"}

@@ -1,18 +1,22 @@
+/* eslint-disable @next/next/no-img-element */
 import MainCard from "@/components/MainCard";
+import { errorNotify } from "@/components/Notification";
 import { memeData } from "@/data";
-import useObserver from "@/hooks/use-observer";
-import UseGetMostMeme from "@/service/use-get-most-meme";
+import { createPostService } from "@/service/post";
 import { Badge, Button, Card, FileButton, Text } from "@mantine/core";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
 import Masonry from "react-masonry-css";
 
 const CompetitionDetail = () => {
   const router = useRouter();
   const breakpointColumnsObj = { default: 3, 1000: 2, 750: 1 };
-  const [file, setFile] = useState(null);
+
+  const { publicKey } = useWallet();
+  const walletAdress = publicKey?.toBase58();
 
   const id = router.query?.id;
+
   const data = {
     coin: "Solana (SOL)",
     image: "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-5.png",
@@ -24,9 +28,14 @@ const CompetitionDetail = () => {
     invest: 3000,
   };
 
-  const { data: mostMemeData, isError, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } = UseGetMostMeme();
-
-  const observerRef = useObserver(fetchNextPage, hasNextPage, isFetchingNextPage);
+  const sendImage = async (e) => {
+    if (!walletAdress) return errorNotify("Please Log in");
+    try {
+      await createPostService(e, id);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div>
@@ -51,12 +60,12 @@ const CompetitionDetail = () => {
             </Text>
             <div className="flex justify-end">
               <Text mt={8} size="sm" c="dimmed">
-                Participant: <span className="">{data?.participant}</span>
+                Participant: <span className="">{data?.participant} (Sol)</span>
               </Text>
             </div>
           </div>
           <div className="flex justify-start">
-            <FileButton onChange={setFile} accept="image/png,image/jpeg">
+            <FileButton onChange={(e) => sendImage(e)} accept="image/png,image/jpeg">
               {(props) => (
                 <Button {...props} mt="md" radius="md">
                   Add Meme
@@ -71,7 +80,7 @@ const CompetitionDetail = () => {
 
       <Masonry breakpointCols={breakpointColumnsObj} className="my-masonry-grid w-full" columnClassName="my-masonry-grid_column">
         {memeData?.map((postObj, i) => (
-          <MainCard refetch={refetch} ref={observerRef} key={postObj._id + i} postObj={{ ...postObj }} />
+          <MainCard key={postObj._id + i} postObj={{ ...postObj }} />
         ))}
       </Masonry>
     </div>
