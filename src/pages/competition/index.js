@@ -1,10 +1,21 @@
-import { Button, Modal, TextInput, NumberInput, Textarea, FileInput, Loader } from "@mantine/core";
+import {
+  Button,
+  Modal,
+  TextInput,
+  NumberInput,
+  Textarea,
+  FileInput,
+  Loader,
+} from "@mantine/core";
 import CompetitionCard from "@/components/CompetitionCard";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { DateInput, DateTimePicker } from "@mantine/dates";
 import Masonry from "react-masonry-css";
-import { createCompetitionService, getCompetitionService } from "@/service/competition";
+import {
+  createCompetitionService,
+  getCompetitionService,
+} from "@/service/competition";
 import { useQuery } from "react-query";
 import { useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -25,7 +36,10 @@ const Competition = () => {
     return data?.data?.data;
   };
 
-  const { data, error, isLoading, refetch } = useQuery(["competitions"], fetchCompetitions);
+  const { data, error, isLoading, refetch } = useQuery(
+    ["competitions"],
+    fetchCompetitions
+  );
 
   const form = useForm({
     initialValues: {
@@ -38,12 +52,16 @@ const Competition = () => {
 
     validate: {
       name: (value) => (value.length > 0 ? null : "Contest name is required"),
-      description: (value) => (value.length > 0 ? null : "Description is required"),
-      reward: (value) => (value && value > 0 ? null : "Reward amount must be a positive value"),
+      description: (value) =>
+        value.length > 0 ? null : "Description is required",
+      reward: (value) =>
+        value && value > 0 ? null : "Reward amount must be a positive value",
       expireTime: (value) => {
         const now = new Date();
         const expireDate = new Date(value);
-        return expireDate > now ? null : "Expiration date must be in the future";
+        return expireDate > now
+          ? null
+          : "Expiration date must be in the future";
       },
     },
   });
@@ -76,7 +94,11 @@ const Competition = () => {
         </Button>
       </div>
       {data && (
-        <Masonry breakpointCols={breakpointColumnsObj} className="my-masonry-grid w-full" columnClassName="my-masonry-grid_column">
+        <Masonry
+          breakpointCols={breakpointColumnsObj}
+          className="my-masonry-grid w-full"
+          columnClassName="my-masonry-grid_column"
+        >
           {data?.map((item, i) => (
             <CompetitionCard key={i} item={item} />
           ))}
@@ -99,7 +121,13 @@ const Competition = () => {
         </div>
       )}
 
-      <Modal size="md" centered opened={opened} onClose={close} title="Create Competition">
+      <Modal
+        size="md"
+        centered
+        opened={opened}
+        onClose={close}
+        title="Create Competition"
+      >
         <form className="space-y-4" onSubmit={formOnSubmit}>
           {form.values.image ? (
             <div className="relative">
@@ -113,12 +141,31 @@ const Competition = () => {
               </button>
             </div>
           ) : (
-            <FileInput label="Upload image" placeholder="Upload image" {...form.getInputProps("image")} accept="image/png,image/jpeg" />
+            <FileInput
+              label="Upload image"
+              placeholder="Upload image"
+              {...form.getInputProps("image")}
+              accept="image/png,image/jpeg"
+            />
           )}
 
-          <TextInput label="Competition Name" placeholder="Competition name" {...form.getInputProps("name")} />
-          <TextInput type="number" label="Reward" placeholder="Reward amount" {...form.getInputProps("reward")} min={0} />
-          <Textarea label="Description" placeholder="pCompetition description" {...form.getInputProps("description")} />
+          <TextInput
+            label="Competition Name"
+            placeholder="Competition name"
+            {...form.getInputProps("name")}
+          />
+          <TextInput
+            type="decimal"
+            label="Reward"
+            placeholder="Reward amount"
+            {...form.getInputProps("reward")}
+            min={0}
+          />
+          <Textarea
+            label="Description"
+            placeholder="pCompetition description"
+            {...form.getInputProps("description")}
+          />
           <DateTimePicker
             minDate={new Date()}
             valueFormat="DD/MM/YYYY HH:mm:ss"
@@ -127,7 +174,13 @@ const Competition = () => {
             {...form.getInputProps("expireTime")}
           />
 
-          <Button disabled={!form.values.image} loading={loading} fullWidth mt="md" type="submit">
+          <Button
+            disabled={!form.values.image}
+            loading={loading}
+            fullWidth
+            mt="md"
+            type="submit"
+          >
             Submit
           </Button>
         </form>

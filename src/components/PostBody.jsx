@@ -20,7 +20,7 @@ const PostBody = ({ postObj, handleOpen }) => {
           <img
             ref={imageRef}
             className="object-contain w-full max-w-[500px]  h-full overflow-hidden"
-            src={postObj?.image_name}
+            src={postObj?.image}
             alt={postObj?.user?.account_name}
             styles="visibility: hidden;"
           />

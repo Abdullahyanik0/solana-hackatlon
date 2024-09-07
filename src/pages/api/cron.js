@@ -1,5 +1,5 @@
-/* eslint-disable import/no-anonymous-default-export */
-import cron from "node-cron";
+// pages/api/cron.js
+import { NextResponse } from "next/server";
 import {
   Keypair,
   PublicKey,
@@ -71,7 +71,7 @@ const mintAndTransferNft = async (
   await sendAndConfirmTransaction(connection, mintToTx, [payer]);
 };
 
-cron.schedule("* * * * *", async () => {
+export async function GET() {
   try {
     const client = await clientPromise;
     const db = client.db("MemeMaster");
@@ -138,8 +138,6 @@ cron.schedule("* * * * *", async () => {
   } finally {
     await client.close();
   }
-});
 
-export default (req, res) => {
-  res.status(200).json({ message: "Scheduler is running" });
-};
+  return NextResponse.json({ message: "Cron job executed" });
+}
