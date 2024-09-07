@@ -4,8 +4,8 @@ import { errorNotify } from "@/components/Notification";
 import { memeData } from "@/data";
 import useCountdown from "@/hooks/use-countdown";
 import { getSingleCompetitionService } from "@/service/competition";
-import { createPostService } from "@/service/post";
-import { Badge, Button, Card, FileButton, Text } from "@mantine/core";
+import { createMemeService } from "@/service/meme";
+import { Badge, Button, Card, FileButton, Loader, Text } from "@mantine/core";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useRouter } from "next/router";
 import Masonry from "react-masonry-css";
@@ -27,14 +27,15 @@ const CompetitionDetail = () => {
 
   const { data, error, isLoading, refetch } = useQuery(["competitions-detail"], fetchCompetitions);
 
-  console.log(data);
+  console.log("data", data);
 
-  const { days, hours, minutes, seconds } = useCountdown(data?.expireTime);
+  const { days, hours, minutes, seconds } = useCountdown(data?.competitionDetail?.expireTime);
 
   const sendImage = async (e) => {
     if (!walletAdress) return errorNotify("Please Log in");
     try {
-      await createPostService(e, id);
+      await createMemeService(e, id, walletAdress);
+      refetch();
     } catch (error) {
       console.log(error);
     }
@@ -42,16 +43,18 @@ const CompetitionDetail = () => {
 
   return (
     <div>
+    {!isLoading && (
+
       <Card className="flex flex-col md:flex-row gap-4 sm:gap-10 !justify-between" shadow="sm" padding="lg" radius="md" withBorder>
         <div className="">
-          <img src={data?.image} alt={data?.name} />
+          <img src={data?.competitionDetail?.image} alt={data?.competitionDetail?.name} />
         </div>
 
         <div className="w-full flex flex-col justify-between">
           <div className="flex flex-col gap-4">
             <div className="flex flex-col sm:flex-row text-start  justify-between gap-2 my-4 sm:items-center">
               <Text className="text-2xl md:text-4xl tewi" fw={500}>
-                {data?.name}
+                {data?.competitionDetail?.name}
               </Text>
               <Badge className="w-fit" color="grape" variant="light">
                 Solana (SOL)
@@ -59,14 +62,14 @@ const CompetitionDetail = () => {
             </div>
 
             <Text lineClamp={2} size="sm" c="dimmed">
-              {data?.description}{" "}
+              {data?.competitionDetail?.description}{" "}
             </Text>
             <div className="flex justify-between items-center mt-4">
               <Text size="sm" c="dimmed">
                 Remaining time: {days}:{hours}:{minutes}:{seconds}
               </Text>
               <Text size="sm" c="dimmed">
-                Reward: <span className="">{data?.reward} (Sol)</span>
+                Reward: <span className="">{data?.competitionDetail?.reward} (Sol)</span>
               </Text>
             </div>
           </div>
@@ -81,14 +84,33 @@ const CompetitionDetail = () => {
           </div>
         </div>
       </Card>
+    )}
 
       <h1 className="font-display text-jacarta-700  text-3xl my-8 dark:text-white">Created memes</h1>
 
-      <Masonry breakpointCols={breakpointColumnsObj} className="my-masonry-grid w-full" columnClassName="my-masonry-grid_column">
-        {memeData?.map((postObj, i) => (
-          <MainCard key={postObj._id + i} postObj={{ ...postObj }} />
-        ))}
-      </Masonry>
+      {data?.applies && (
+        <Masonry breakpointCols={breakpointColumnsObj} className="my-masonry-grid w-full" columnClassName="my-masonry-grid_column">
+          {data?.applies?.map((postObj, i) => (
+            <MainCard key={postObj._id + i} postObj={{ ...postObj }} />
+          ))}
+        </Masonry>
+      )}
+      {!data?.applies && (
+        <div className="flex justify-center items-center">
+          <h2>  Henüz meme eklenmedi.</h2>
+        </div>
+      
+      )}
+      {isLoading && (
+        <div className="flex justify-center items-center">
+          <Loader size="lg" />
+        </div>
+      )}
+      {error && (
+        <div className="flex justify-center items-center">
+          <h2>An error has occurred</h2>
+        </div>
+      )}
     </div>
   );
 };

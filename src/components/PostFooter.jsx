@@ -1,13 +1,17 @@
 import { IoStatsChart } from "react-icons/io5";
 import { BiDislike, BiLike, BiSolidDislike, BiSolidLike } from "react-icons/bi";
 import { TbMessageShare } from "react-icons/tb";
-import { likePostService, unlikePostService } from "../service/post";
+import { likePostService, unlikePostService } from "../service/meme";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 const PostFooter = ({ postObj, refetch, handleOpen, modal, handleClose }) => {
   const mainUser = {};
+  
+  const { publicKey } = useWallet();
+  const walletAdress = publicKey?.toBase58();
 
   const handleLike = async (upOrDown) => {
-    upOrDown !== "up" ? await unlikePostService(postObj?._id) : await likePostService(postObj?._id);
+    upOrDown !== "up" ? await unlikePostService(postObj?._id,walletAdress) : await likePostService(postObj?._id,walletAdress);
     try {
       if (refetch) refetch();
     } catch (error) {
