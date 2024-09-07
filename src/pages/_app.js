@@ -5,6 +5,9 @@ import { Notifications } from "@mantine/notifications";
 import App from "next/app";
 
 import { Inter } from "next/font/google";
+import Link from "next/link";
+import { QueryClientProvider } from "react-query";
+import queryClient from "@/query-client";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function MyApp(props) {
@@ -16,20 +19,20 @@ export default function MyApp(props) {
   };
   return (
     <>
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin={true} />
-      <link
-        href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600&display=swap"
-        rel="stylesheet"
-      />
+     <QueryClientProvider client={queryClient}>
       <ColorSchemeProvider colorScheme={"dark"}>
         <MantineProvider theme={theme} withGlobalStyles withNormalizeCSS>
           <Notifications position="top-right" />
-          <div className={`${inter.className}`}>
+          <div className="p-4 sm:px-10 border-b flex justify-end  transition-all gap-6">
+            <Link className="hover:text-white" href="/">Home</Link>
+            <Link className="hover:text-white" href="/competition">Competition</Link>
+          </div>
+          <div className={`${inter.className} p-4 sm:px-10 pt-0 mt-4`}>
             <Component {...pageProps} />
           </div>
         </MantineProvider>
       </ColorSchemeProvider>
+      </QueryClientProvider>
     </>
   );
 }

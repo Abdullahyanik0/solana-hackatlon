@@ -93,12 +93,12 @@ const MemeMaker = () => {
             )}
 
             {!file && (
-              <div className="min-w-[400px] min-h-[250px] group bg-black w-full  group relative flex max-w-md flex-col items-center justify-center rounded-lg border-2 border-dashed  text-center">
-                <div className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2">
+              <div className="min-w-[400px] min-h-[250px] group bg-black w-full  group relative flex max-w-md rounded-lg border-2 border-dashed  text-center">
+                <div className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 group-hover:hidden">
                   <div className="relative z-10 cursor-pointer">
                     <LuMousePointerClick size={32} />
                   </div>
-                  <p className=" mx-auto text-xs text-white">JPG, PNG Max size: 5 MB</p>
+                  <p className=" mx-auto text-xs text-white ">JPG, PNG Max size: 5 MB</p>
                 </div>
                 <FileUploader handleChange={handleChange} name="file" types={fileTypes} classes="file-drag" maxSize={100} minSize={0} />
               </div>
