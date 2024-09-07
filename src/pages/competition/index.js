@@ -30,12 +30,12 @@ const Competition = () => {
   });
 
   return (
-    <div className="mt-4 w-full">
+    <div className="w-full">
       <div className="mb-4 flex justify-between items-center gap-4">
         <h1>Competition</h1>
         <Button onClick={open}>Create Competition</Button>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 h-full">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 h-full">
         {competitionArr?.map((item, i) => (
           <CompetitionCard key={i} item={item} />
         ))}

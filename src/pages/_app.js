@@ -6,6 +6,8 @@ import App from "next/app";
 
 import { Inter } from "next/font/google";
 import Link from "next/link";
+import { QueryClientProvider } from "react-query";
+import queryClient from "@/query-client";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function MyApp(props) {
@@ -17,6 +19,7 @@ export default function MyApp(props) {
   };
   return (
     <>
+     <QueryClientProvider client={queryClient}>
       <ColorSchemeProvider colorScheme={"dark"}>
         <MantineProvider theme={theme} withGlobalStyles withNormalizeCSS>
           <Notifications position="top-right" />
@@ -24,11 +27,12 @@ export default function MyApp(props) {
             <Link className="hover:text-white" href="/">Home</Link>
             <Link className="hover:text-white" href="/competition">Competition</Link>
           </div>
-          <div className={`${inter.className} p-4 sm:px-10 pt-0`}>
+          <div className={`${inter.className} p-4 sm:px-10 pt-0 mt-4`}>
             <Component {...pageProps} />
           </div>
         </MantineProvider>
       </ColorSchemeProvider>
+      </QueryClientProvider>
     </>
   );
 }
