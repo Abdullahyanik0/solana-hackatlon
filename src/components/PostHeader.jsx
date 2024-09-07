@@ -4,7 +4,7 @@ import UserAvatar from "./UserAvatar";
 
 import { useClipboard } from "@mantine/hooks";
 import { useRouter } from "next/router";
-import { formatRelativeTime } from "@/helper";
+import { formatRelativeTime } from "@/utils/helper";
 import { BsThreeDotsVertical } from "react-icons/bs";
 
 //local imports
