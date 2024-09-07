@@ -3,8 +3,7 @@ import { IncomingForm } from "formidable";
 import fs from "fs";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
-import { Configuration, OpenAIApi } from "openai";
-import dayjs from "dayjs";
+import OpenAI from "openai";
 
 const { NET_URL } = process.env;
 
@@ -74,9 +73,6 @@ export const uploadMiddleware = (req) => {
 
 export const connection = new Connection(NET_URL, "confirmed");
 
-const configuration = new Configuration({
+export const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-
-export const openai = new OpenAIApi(configuration);
-
