@@ -24,11 +24,9 @@ const genarateText = async (text) => {
       temperature: 0.7,
     });
 
-    const memeSentences = response.data.choices[0].message.content
-      .split("\n")
-      .map((sentence) => {
-        return sentence.replace(/[0-9".]/g, "");
-      });
+    const memeSentences = response.data.choices[0].message.content.split("\n").map((sentence) => {
+      return sentence.replace(/[0-9".]/g, "");
+    });
 
     return memeSentences;
   } catch (err) {

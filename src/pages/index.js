@@ -83,18 +83,13 @@ const MemeMaker = () => {
   return (
     <div>
       <div className="flex flex-col items-center mt-20 w-full">
-       
         <div className="w-11/12 max-w-5xl mt-16 flex flex-col items-center"></div>
         <h1 className="font-display text-jacarta-700  text-3xl text-center dark:text-white">
           {file ? "Make a meme" : "Upload an image to get started"}
         </h1>
         <div className="mt-6">
           <div className="mb-6">
-            {file ? (
-              <SingleMemeComponent file={imgQuery ? null : files} data={memeData} img={img} imgQuery={imgQuery} />
-            ) : (
-              <p className="dark:text-jacarta-300 text-2xs mb-3">Drag or choose your file to upload</p>
-            )}
+            {file && <SingleMemeComponent file={imgQuery ? null : files} data={memeData} img={img} imgQuery={imgQuery} />}
 
             {!file && (
               <div className="min-w-[400px] min-h-[250px] group bg-black w-full  group relative flex max-w-md rounded-lg border-2 border-dashed  text-center">
