@@ -3,6 +3,7 @@ import { IncomingForm } from "formidable";
 import fs from "fs";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
+const { Configuration, OpenAIApi } = require("openai");
 
 const { NET_URL } = process.env;
 
@@ -23,7 +24,8 @@ export const uploadMiddleware = (req) => {
       }
 
       const filePath = uploadedFile.filepath || uploadedFile.path;
-      const originalFilename = uploadedFile.originalFilename || uploadedFile.name;
+      const originalFilename =
+        uploadedFile.originalFilename || uploadedFile.name;
 
       const uniqueFilename = `${uuidv4()}-${originalFilename}`;
       const newFilePath = path.join(form.uploadDir, uniqueFilename);
@@ -45,3 +47,9 @@ export const uploadMiddleware = (req) => {
 };
 
 export const connection = new Connection(NET_URL, "confirmed");
+
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+export const openai = new OpenAIApi(configuration);

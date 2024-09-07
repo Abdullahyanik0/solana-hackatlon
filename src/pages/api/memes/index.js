@@ -1,5 +1,4 @@
-import clientPromise from "@/lib/mongodb";
-import { uploadMiddleware } from "@/utils/helper";
+import { openai } from "@/utils/helper";
 
 export const config = {
   api: {

@@ -21,7 +21,7 @@ export default async function handler(req, res) {
 
       const applies = await db
         .collection("applies")
-        .find({ competitionsId: competitionDetail?._id })
+        .find({ competitionsId: String(competitionDetail?._id) })
         .toArray();
 
       res
