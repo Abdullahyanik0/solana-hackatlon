@@ -6,8 +6,8 @@ import { BsDownload } from "react-icons/bs";
 import { AiOutlineStar, AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 import { successNotify, errorNotify } from "./Notification";
 import { useDisclosure } from "@mantine/hooks";
-import { Loading } from "./Loading";
-import FitTextDiv from "./FitTextDiv";
+import Loading from "@/components/Loading";
+import FitTextDiv from "@/components/FitTextDiv";
 
 const MemeComponent = ({ data, setData, handleChange, refetch, saved, file, deleteMemes = false }) => {
   const [loading, setLoading] = useState(false);

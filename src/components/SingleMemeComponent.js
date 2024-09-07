@@ -6,7 +6,7 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { BsDownload } from "react-icons/bs";
 import { successNotify, errorNotify } from "@/components/Notification";
 import FitTextDiv from "@/components/FitTextDiv";
-import { Loading } from "@/components/Loading";
+import Loading from "@/components/Loading";
 import { Button } from "@mantine/core";
 
 const SingleMemeComponent = ({ data: newData, img, refetch, file, handleClose }) => {
@@ -99,63 +99,43 @@ const SingleMemeComponent = ({ data: newData, img, refetch, file, handleClose })
     setLoading(true);
     setBorder(true);
 
-    if (data?.[i]?.image_name?.includes(".gif")) {
-      await downloadGifMemeService(data?.[i])
-        .then((response) => {
-          console.log(response);
-          const url = URL.createObjectURL(new Blob([response.data], { type: "image/gif" }));
+    const element = document.querySelectorAll(".meme-box-single")[i];
+    let random = Math.floor(100000 + Math.random() * 900000);
+    const newImage = new Image();
+
+    /*   if (!data[i]?._id && !file) {
+      const imgElement = element.querySelector("img");
+      imgElement.src = data[i]?.image_name;
+    } else if (file) {
+      const {
+        data: { fileName },
+      } = await savePictureService(file);
+
+      const imgElement = element.querySelector("img");
+      imgElement.src = fileName;
+    } */
+
+    newImage.onload = () => {
+      toPng(element, { crossOrigin: "Anonymous" })
+        .then(function (dataUrl) {
           const link = document.createElement("a");
-          link.href = url;
-          link.setAttribute("download", "");
-          document.body.appendChild(link);
+          link.download = `meme${random}.png`;
+          link.href = dataUrl;
           link.click();
+          successNotify("Success", "Meme Downloaded Successfully");
           setLoading(false);
-          setBorder(false);
         })
-        .catch(() => {
+        .catch(function (error) {
+          console.error("oops, something went wrong!", error);
+          errorNotify("Failed", "Something went wrong!");
           setLoading(false);
-          setBorder(false);
         });
-    } else {
-      const element = document.querySelectorAll(".meme-box-single")[i];
+    };
+    newImage.src = element.style.backgroundImage.replace(/url\((['"])?(.*?)\1\)/gi, "$2");
 
-      let random = Math.floor(100000 + Math.random() * 900000);
-      const newImage = new Image();
-
-      if (!data[i]?._id && !file) {
-        const imgElement = element.querySelector("img");
-        imgElement.src = data[i]?.image_name;
-      } else if (file) {
-        const {
-          data: { fileName },
-        } = await savePictureService(file);
-
-        const imgElement = element.querySelector("img");
-        imgElement.src = fileName;
-      }
-
-      newImage.onload = () => {
-        toPng(element, { crossOrigin: "Anonymous" })
-          .then(function (dataUrl) {
-            const link = document.createElement("a");
-            link.download = `meme${random}.png`;
-            link.href = dataUrl;
-            link.click();
-            successNotify("Success", "Meme Downloaded Successfully");
-            setLoading(false);
-          })
-          .catch(function (error) {
-            console.error("oops, something went wrong!", error);
-            errorNotify("Failed", "Something went wrong!");
-            setLoading(false);
-          });
-      };
-      newImage.src = element.style.backgroundImage.replace(/url\((['"])?(.*?)\1\)/gi, "$2");
-
-      setTimeout(() => {
-        setBorder(false);
-      }, 2500);
-    }
+    setTimeout(() => {
+      setBorder(false);
+    }, 2500);
   };
 
   return (
@@ -182,7 +162,7 @@ const SingleMemeComponent = ({ data: newData, img, refetch, file, handleClose })
                   bounds="parent"
                   className={`text-center uppercase ${
                     !border && "meme-resize"
-                  }  border-dashed hover:bg-red-100/20 border-2 border-transparent !flex !justify-center !items-center absolute group`}
+                  }  border-dashed hover:bg-purple-500/10 border-2 border-transparent !flex !justify-center !items-center absolute group`}
                   position={{
                     x: caption.x,
                     y: caption.y,
@@ -213,10 +193,10 @@ const SingleMemeComponent = ({ data: newData, img, refetch, file, handleClose })
                       color: caption.fontColor,
                     }}
                   >
-                    <div className="absolute -translate-x-1/2 -translate-y-1/2 top-0 left-0 w-2 h-2 group-hover:bg-accent "></div>
-                    <div className="absolute -translate-x-1/2 -translate-y-1/2 top-0 -right-2 w-2 h-2 group-hover:bg-accent "></div>
-                    <div className="absolute -translate-x-1/2 -translate-y-1/2 -bottom-2 left-0 w-2 h-2 group-hover:bg-accent "></div>
-                    <div className="absolute -translate-x-1/2 -translate-y-1/2 -bottom-2 -right-2 w-2 h-2 group-hover:bg-accent "></div>
+                    <div className="absolute -translate-x-1/2 -translate-y-1/2 top-0 left-0 w-2 h-2 group-hover:bg-purple-500 "></div>
+                    <div className="absolute -translate-x-1/2 -translate-y-1/2 top-0 -right-2 w-2 h-2 group-hover:bg-purple-500 "></div>
+                    <div className="absolute -translate-x-1/2 -translate-y-1/2 -bottom-2 left-0 w-2 h-2 group-hover:bg-purple-500 "></div>
+                    <div className="absolute -translate-x-1/2 -translate-y-1/2 -bottom-2 -right-2 w-2 h-2 group-hover:bg-purple-500 "></div>
                     {caption.text}
                   </FitTextDiv>
                 </Rnd>
@@ -246,33 +226,24 @@ const SingleMemeComponent = ({ data: newData, img, refetch, file, handleClose })
       <div className="flex flex-col gap-4 w-full px-4">
         {!newData?.[0]?.image_name?.includes(".gif") && (
           <div className="flex flex-col sm:flex-row justify-center items-center w-full gap-4">
-            <button
-              className="flex w-full whitespace-nowrap justify-center items-center gap-2 bg-accent shadow-accent-volume hover:bg-accent-dark  rounded-full py-3 px-8  text-center font-semibold text-white transition-all"
-              onClick={() => handleAddCaption()}
-            >
+            <Button onClick={() => handleAddCaption()}>
               New Text
               <span className="pl-1">
                 <AiOutlinePlus size={20} />
               </span>
-            </button>
-            <button
-              className="flex w-full justify-center items-center gap-2 bg-accent shadow-accent-volume hover:bg-accent-dark  rounded-full py-3 px-8  text-center font-semibold text-white transition-all"
-              onClick={() => handleAddCaption(1, "Meme header goes here")}
-            >
+            </Button>
+            <Button onClick={() => handleAddCaption(1, "Meme header goes here")}>
               Header
               <span className="pl-1">
                 <AiOutlinePlus size={20} />
               </span>
-            </button>
-            <button
-              className="flex w-full justify-center items-center gap-2 bg-accent shadow-accent-volume hover:bg-accent-dark  rounded-full py-3 px-8  text-center font-semibold text-white transition-all"
-              onClick={() => handleAddCaption(footerHeight, "Meme footer goes here")}
-            >
+            </Button>
+            <Button onClick={() => handleAddCaption(footerHeight, "Meme footer goes here")}>
               Footer
               <span className="pl-1">
                 <AiOutlinePlus size={20} />
               </span>
-            </button>
+            </Button>
           </div>
         )}
 
