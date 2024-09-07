@@ -3,7 +3,7 @@ import { IncomingForm } from "formidable";
 import fs from "fs";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
-const { Configuration, OpenAIApi } = require("openai");
+import { Configuration, OpenAIApi } from "openai";
 
 const { NET_URL } = process.env;
 
