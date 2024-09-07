@@ -82,6 +82,12 @@ const Competition = () => {
           ))}
         </Masonry>
       )}
+      {!data ||
+        (data?.length == 0 && (
+          <div className="flex justify-center items-center">
+            <h2> No task has been added yet.</h2>
+          </div>
+        ))}
       {isLoading && (
         <div className="flex justify-center items-center">
           <Loader size="lg" />
