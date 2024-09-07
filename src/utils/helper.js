@@ -2,6 +2,7 @@ import { Connection } from "@solana/web3.js";
 import { IncomingForm } from "formidable";
 import fs from "fs";
 import path from "path";
+import { v4 as uuidv4 } from "uuid";
 
 const { NET_URL } = process.env;
 
@@ -13,21 +14,32 @@ export const uploadMiddleware = (req) => {
 
     form.parse(req, (err, fields, files) => {
       if (err) {
-        reject({ err });
+        return reject({ err: "Dosya yükleme hatası: " + err.message });
       }
 
-      const filePath = files.photo.filepath;
-      const newFilePath = path.join(
-        form.uploadDir,
-        files.photo.originalFilename
-      );
+      const uploadedFile = files.image && files.image[0];
+      if (!uploadedFile) {
+        return reject({ err: "Resim yüklenmedi" });
+      }
 
-      fs.renameSync(filePath, newFilePath);
+      const filePath = uploadedFile.filepath || uploadedFile.path;
+      const originalFilename = uploadedFile.originalFilename || uploadedFile.name;
 
-      resolve({
-        fields,
-        image: `/uploads/${files.photo.originalFilename}`,
-      });
+      const uniqueFilename = `${uuidv4()}-${originalFilename}`;
+      const newFilePath = path.join(form.uploadDir, uniqueFilename);
+
+      try {
+        fs.renameSync(filePath, newFilePath);
+
+        const relativeFilePath = path.relative("public", newFilePath);
+
+        resolve({
+          fields,
+          image: `/${relativeFilePath.replace(/\\+/g, "/")}`,
+        });
+      } catch (renameErr) {
+        return reject({ err: renameErr.message });
+      }
     });
   });
 };
