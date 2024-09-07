@@ -1,3 +1,5 @@
+import { ObjectId } from "mongodb";
+//local imports
 import clientPromise from "@/lib/mongodb";
 
 export const config = {
@@ -15,7 +17,7 @@ export default async function handler(req, res) {
     try {
       const competitionDetail = await db
         .collection("competitions")
-        .findOne({ _id });
+        .findOne({ _id: new ObjectId(_id) });
 
       const applies = await db
         .collection("applies")
