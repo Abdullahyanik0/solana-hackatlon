@@ -1,11 +1,12 @@
-import { Button, Group, Modal, TextInput, NumberInput, Textarea, FileButton, FileInput } from "@mantine/core";
+import { Button, Group, Modal, TextInput, NumberInput, Textarea, FileButton, FileInput, Loader } from "@mantine/core";
 import CompetitionCard from "@/components/CompetitionCard";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { competitionArr } from "@/data";
 import { DateInput } from "@mantine/dates";
 import Masonry from "react-masonry-css";
-import { useEffect } from "react";
+import { getCompetitionService } from "@/service/competition";
+import { useQuery } from "react-query";
 
 const Competition = () => {
   const [opened, { open, close }] = useDisclosure(false);
@@ -24,8 +25,7 @@ const Competition = () => {
     validate: {
       name: (value) => (value.length > 0 ? null : "Contest name is required"),
       description: (value) => (value.length > 0 ? null : "Description is required"),
-      reward: (value) =>
-        value && value > 0 ? null : "Reward amount must be a positive value",
+      reward: (value) => (value && value > 0 ? null : "Reward amount must be a positive value"),
       expireTime: (value) => {
         const now = new Date();
         const expireDate = new Date(value);
@@ -40,29 +40,36 @@ const Competition = () => {
     console.log("Yarışma verileri", values);
   });
 
-  /* const getCompetitions = async()=>{
-    try {
-      await 
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  const fetchCompetitions = async () => {
+    const data = await getCompetitionService();
+    return data;
+  };
 
-  useEffect(() => {
-    getCompetitions()
-  }, []) */
-
+  const { data, error, isLoading } = useQuery(["competitions"], fetchCompetitions);
+  console.log(data);
   return (
     <div className="w-full">
       <div className="mb-4 flex justify-between items-center gap-4">
         <h1>Competition</h1>
         <Button onClick={open}>Create Competition</Button>
       </div>
-      <Masonry breakpointCols={breakpointColumnsObj} className="my-masonry-grid w-full" columnClassName="my-masonry-grid_column">
-        {competitionArr?.map((item, i) => (
-          <CompetitionCard key={i} item={item} />
-        ))}
-      </Masonry>
+      {data && (
+        <Masonry breakpointCols={breakpointColumnsObj} className="my-masonry-grid w-full" columnClassName="my-masonry-grid_column">
+          {competitionArr?.map((item, i) => (
+            <CompetitionCard key={i} item={item} />
+          ))}
+        </Masonry>
+      )}
+      {!isLoading && (
+        <div className="flex justify-center items-center">
+          <Loader size="lg" />
+        </div>
+      )}
+      {error && (
+        <div className="flex justify-center items-center">
+          <h2>An error has occurred</h2>
+        </div>
+      )}
 
       <Modal size="md" centered opened={opened} onClose={close} title="Create Competition">
         <form className="space-y-4" onSubmit={formOnSubmit}>
