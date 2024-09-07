@@ -2,11 +2,14 @@
 import MainCard from "@/components/MainCard";
 import { errorNotify } from "@/components/Notification";
 import { memeData } from "@/data";
+import useCountdown from "@/hooks/use-countdown";
+import { getSingleCompetitionService } from "@/service/competition";
 import { createPostService } from "@/service/post";
 import { Badge, Button, Card, FileButton, Text } from "@mantine/core";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useRouter } from "next/router";
 import Masonry from "react-masonry-css";
+import { useQuery } from "react-query";
 
 const CompetitionDetail = () => {
   const router = useRouter();
@@ -17,16 +20,16 @@ const CompetitionDetail = () => {
 
   const id = router.query?.id;
 
-  const data = {
-    coin: "Solana (SOL)",
-    image: "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-5.png",
-    name: "Pirate Poet of Laughs",
-    description:
-      "80 memes, getting 500 likes, commenting 100 times and getting at least 100 comments from memes / participating in at least 10 contests",
-    participant: 200,
-    id: "098765456789",
-    invest: 3000,
+  const fetchCompetitions = async () => {
+    const data = await getSingleCompetitionService(id);
+    return data?.data?.data;
   };
+
+  const { data, error, isLoading, refetch } = useQuery(["competitions-detail"], fetchCompetitions);
+
+  console.log(data);
+
+  const { days, hours, minutes, seconds } = useCountdown(data?.expireTime);
 
   const sendImage = async (e) => {
     if (!walletAdress) return errorNotify("Please Log in");
@@ -51,16 +54,19 @@ const CompetitionDetail = () => {
                 {data?.name}
               </Text>
               <Badge className="w-fit" color="grape" variant="light">
-                {data?.coin}
+                Solana (SOL)
               </Badge>
             </div>
 
             <Text lineClamp={2} size="sm" c="dimmed">
               {data?.description}{" "}
             </Text>
-            <div className="flex justify-end">
-              <Text mt={8} size="sm" c="dimmed">
-                Participant: <span className="">{data?.participant} (Sol)</span>
+            <div className="flex justify-between items-center mt-4">
+              <Text size="sm" c="dimmed">
+                Remaining time: {days}:{hours}:{minutes}:{seconds}
+              </Text>
+              <Text size="sm" c="dimmed">
+                Reward: <span className="">{data?.reward} (Sol)</span>
               </Text>
             </div>
           </div>

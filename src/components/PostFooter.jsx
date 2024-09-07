@@ -14,7 +14,6 @@ const PostFooter = ({ postObj, refetch, handleOpen, modal, handleClose }) => {
       console.log(error);
     }
   };
-  const handleShare = () => console.log("sharePost");
 
   return (
     <div className="flex justify-between w-full text-sm pt-2 border-t border-color p-2">
