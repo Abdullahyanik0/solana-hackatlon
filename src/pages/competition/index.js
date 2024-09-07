@@ -1,12 +1,16 @@
-import { Button, Group, Modal, TextInput, NumberInput, Textarea, FileButton, FileInput } from "@mantine/core";
+import { Button, Group, Modal, TextInput, NumberInput, Textarea, FileButton, FileInput, Loader } from "@mantine/core";
 import CompetitionCard from "@/components/CompetitionCard";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { competitionArr } from "@/data";
 import { DateInput } from "@mantine/dates";
+import Masonry from "react-masonry-css";
+import { getCompetitionService } from "@/service/competition";
+import { useQuery } from "react-query";
 
 const Competition = () => {
   const [opened, { open, close }] = useDisclosure(false);
+  const breakpointColumnsObj = { default: 4, 1000: 2, 750: 1 };
 
   const form = useForm({
     initialValues: {
@@ -19,9 +23,16 @@ const Competition = () => {
     },
 
     validate: {
-      name: (value) => (value.length > 0 ? null : "Yarışma ismi gereklidir"),
-      description: (value) => (value.length > 0 ? null : "Açıklama gereklidir"),
-      reward: (value) => (value > 0 ? null : "Ödül miktarı pozitif bir değer olmalıdır"),
+      name: (value) => (value.length > 0 ? null : "Contest name is required"),
+      description: (value) => (value.length > 0 ? null : "Description is required"),
+      reward: (value) => (value && value > 0 ? null : "Reward amount must be a positive value"),
+      expireTime: (value) => {
+        const now = new Date();
+        const expireDate = new Date(value);
+        return expireDate > now ? null : "Expiration date must be in the future";
+      },
+      creator: (value) => (value.length > 0 ? null : "Creator information is required"),
+      image: (value) => (value.length > 0 ? null : "Image link is required"),
     },
   });
 
@@ -29,17 +40,36 @@ const Competition = () => {
     console.log("Yarışma verileri", values);
   });
 
+  const fetchCompetitions = async () => {
+    const data = await getCompetitionService();
+    return data;
+  };
+
+  const { data, error, isLoading } = useQuery(["competitions"], fetchCompetitions);
+  console.log(data);
   return (
     <div className="w-full">
       <div className="mb-4 flex justify-between items-center gap-4">
         <h1>Competition</h1>
         <Button onClick={open}>Create Competition</Button>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 h-full">
-        {competitionArr?.map((item, i) => (
-          <CompetitionCard key={i} item={item} />
-        ))}
-      </div>
+      {data && (
+        <Masonry breakpointCols={breakpointColumnsObj} className="my-masonry-grid w-full" columnClassName="my-masonry-grid_column">
+          {competitionArr?.map((item, i) => (
+            <CompetitionCard key={i} item={item} />
+          ))}
+        </Masonry>
+      )}
+      {!isLoading && (
+        <div className="flex justify-center items-center">
+          <Loader size="lg" />
+        </div>
+      )}
+      {error && (
+        <div className="flex justify-center items-center">
+          <h2>An error has occurred</h2>
+        </div>
+      )}
 
       <Modal size="md" centered opened={opened} onClose={close} title="Create Competition">
         <form className="space-y-4" onSubmit={formOnSubmit}>
@@ -59,8 +89,8 @@ const Competition = () => {
           )}
 
           <TextInput label="Competition Name" placeholder="Competition name" {...form.getInputProps("name")} />
-          <Textarea label="Description" placeholder="Competition description" {...form.getInputProps("description")} />
           <TextInput type="number" label="Reward" placeholder="Reward amount" {...form.getInputProps("reward")} min={0} />
+          <Textarea label="Description" placeholder="pCompetition description" {...form.getInputProps("description")} />
           <DateInput
             valueFormat="YYYY MMM DD"
             label="Expiration Time"

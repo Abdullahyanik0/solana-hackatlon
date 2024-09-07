@@ -3,9 +3,7 @@ import axios from "axios";
 import { errorNotify, successNotify } from "@/components/Notification";
 
 const axiosInstance = axios.create({
-  //  baseURL: "http://192.168.1.9:1337/api",
-  baseURL: "http://18.196.239.129/api",
-  //  baseURL: "https://app.yufin.ai/api",
+  baseURL: "http://localhost:3000/api",
 });
 
 axiosInstance.setAuthHeader = (token) => {
