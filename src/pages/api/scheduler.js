@@ -4,6 +4,7 @@ import {
   Keypair,
   PublicKey,
   Transaction,
+  SystemProgram,
   sendAndConfirmTransaction,
 } from "@solana/web3.js";
 import {
@@ -12,71 +13,62 @@ import {
   keypairIdentity,
 } from "@metaplex-foundation/js";
 import {
-  createCreateMetadataAccountV2Instruction,
-  Metadata,
   createMintToInstruction,
-} from "@metaplex-foundation/mpl-token-metadata";
-//localhost
+  createAssociatedTokenAccountInstruction,
+} from "@solana/spl-token";
 import clientPromise from "@/lib/mongodb";
 import connection from "../../lib/solana";
 
 const { TEST_PRIVATE_KEY } = process.env;
 
-const createAndTransferNfts = async (
-  _metaplex,
-  payer,
-  mint,
-  competition,
-  winnerAddress
-) => {
-  const metadata = await Metadata.getPDA(mint);
+const transferReward = async (payer, winnerAddress, rewardAmount) => {
+  const recipientPublicKey = new PublicKey(winnerAddress);
 
-  const creators = [
-    {
-      address: new PublicKey(winnerAddress),
-      verified: true,
-      share: 10000,
-    },
-  ];
-
-  const metadataTransaction = new Transaction().add(
-    createCreateMetadataAccountV2Instruction(
-      {
-        metadata,
-        mint,
-        mintAuthority: payer.publicKey,
-        payer: payer.publicKey,
-        updateAuthority: payer.publicKey,
-      },
-      {
-        createMetadataAccountArgsV2: {
-          data: {
-            name: `${competition.name}-winner`,
-            symbol: "",
-            uri: competition.image,
-            sellerFeeBasisPoints: 500,
-            creators: creators.length > 0 ? creators : null,
-          },
-          isMutable: true,
-        },
-      }
-    )
+  const transaction = new Transaction().add(
+    SystemProgram.transfer({
+      fromPubkey: payer.publicKey,
+      toPubkey: recipientPublicKey,
+      lamports: rewardAmount * 1000000000,
+    })
   );
 
-  await sendAndConfirmTransaction(connection, metadataTransaction, [payer]);
+  await sendAndConfirmTransaction(connection, transaction, [payer]);
+};
 
-  const recipientTokenAccount = await _metaplex
+const mintAndTransferNft = async (
+  metaplex,
+  payer,
+  mintAddress,
+  winnerAddress
+) => {
+  const recipientTokenAccount = await metaplex
     .tokens()
     .getAssociatedTokenAddress({
-      mint,
+      mint: mintAddress,
       owner: new PublicKey(winnerAddress),
     });
 
-  const transferTransaction = new Transaction().add(
-    createMintToInstruction(mint, recipientTokenAccount, payer.publicKey, 1)
+  const createTokenAccountTx = new Transaction().add(
+    createAssociatedTokenAccountInstruction(
+      payer.publicKey,
+      recipientTokenAccount,
+      new PublicKey(winnerAddress),
+      mintAddress
+    )
   );
 
-  await sendAndConfirmTransaction(connection, transferTransaction, [payer]);
+  await sendAndConfirmTransaction(connection, createTokenAccountTx, [payer]);
+
+  const mintToTx = new Transaction().add(
+    createMintToInstruction(
+      mintAddress,
+      recipientTokenAccount,
+      payer.publicKey,
+      1
+    )
+  );
+
+  await sendAndConfirmTransaction(connection, mintToTx, [payer]);
 };
 
 cron.schedule("* * * * *", async () => {
@@ -108,6 +100,8 @@ cron.schedule("* * * * *", async () => {
           .limit(1)
           .toArray();
 
+        if (winner.length === 0) continue;
+
         const privateKey = Uint8Array.from(TEST_PRIVATE_KEY);
         const senderKeypair = Keypair.fromSecretKey(privateKey);
 
@@ -115,17 +109,26 @@ cron.schedule("* * * * *", async () => {
           .use(keypairIdentity(senderKeypair))
           .use(bundlrStorage());
 
-        const mint = await metaplex.nfts().create({
+        const { nft } = await metaplex.nfts().create({
           uri: competition.image,
           name: `${competition.name}-winner`,
           sellerFeeBasisPoints: 500,
+          creators: [
+            {
+              address: new PublicKey(winner[0].creator),
+              verified: true,
+              share: 10000,
+            },
+          ],
         });
 
-        await createAndTransferNfts(
+        const rewardAmount = competition.reward;
+        await transferReward(senderKeypair, winner[0].creator, rewardAmount);
+
+        await mintAndTransferNft(
           metaplex,
           senderKeypair,
-          mint.mintAddress,
-          competition,
+          nft.mintAddress,
           winner[0].creator
         );
       }
