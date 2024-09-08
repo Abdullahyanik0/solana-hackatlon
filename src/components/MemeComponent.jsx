@@ -157,15 +157,7 @@ const MemeComponent = ({ data, setData, handleChange, refetch, saved, file, dele
                   </FitTextDiv>
                 </Rnd>
               ))}
-              <div
-                style={{
-                  textShadow: `-1px 0 ${"#000"}, 0 1px ${"#000"}, 1px 0 ${"#000"}, 0 -1px ${"#000"}`,
-                }}
-                className="absolute bottom-[2px] right-1 font-semibold select-none text-white flex items-center gap-1 text-[10px] "
-              >
-                <img className="w-4" src="/icon.png" alt="Yufin ai" />
-                yufin.ai
-              </div>
+           
             </div>
             <div className="my-10 flex flex-wrap justify-center gap-4">
               <button

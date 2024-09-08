@@ -15,9 +15,7 @@ export default async function handler(req, res) {
     try {
       const { fields, image } = await uploadMiddleware(req);
 
-      const { expireTime, ...rest } = Object.fromEntries(
-        Object.entries(fields).map(([key, value]) => [key, value[0]])
-      );
+      const { expireTime, ...rest } = Object.fromEntries(Object.entries(fields).map(([key, value]) => [key, value[0]]));
 
       await db.collection("competitions").insertOne({
         expireTime: new Date(expireTime),
@@ -33,16 +31,11 @@ export default async function handler(req, res) {
     }
   } else if (req.method === "GET") {
     try {
-      const competitions = await db
-        .collection("competitions")
-        .find({ status: "Pending" })
-        .toArray();
+      const competitions = await db.collection("competitions").find().toArray();
 
       const data = await Promise.all(
         await competitions.map(async (competition) => {
-          const participant = await db
-            .collection("applies")
-            .countDocuments({ competationsId: competition?._id });
+          const participant = await db.collection("applies").countDocuments({ competationsId: competition?._id });
 
           return { ...competition, participant };
         })

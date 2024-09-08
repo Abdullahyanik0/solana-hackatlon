@@ -37,7 +37,7 @@ const FitTextDiv = ({ children, style }) => {
   return (
     <div
       ref={divRef}
-      className="text-fit resizable flex justify-center items-center"
+      className="text-fit resizable flex justify-center items-center font-bold"
       style={{
         ...style,
       }}

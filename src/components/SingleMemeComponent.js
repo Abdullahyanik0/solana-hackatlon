@@ -16,7 +16,7 @@ const SingleMemeComponent = ({ data: newData, img, refetch, file, handleClose })
   const imageRef = useRef();
 
   const [data, setData] = useState(newData);
-  console.log(data);
+
   const handleResize = (item, index) => {
     setData((prevState) => {
       const newData = [...prevState];
@@ -102,18 +102,6 @@ const SingleMemeComponent = ({ data: newData, img, refetch, file, handleClose })
     const element = document.querySelectorAll(".meme-box-single")[i];
     let random = Math.floor(100000 + Math.random() * 900000);
     const newImage = new Image();
-
-    /*   if (!data[i]?._id && !file) {
-      const imgElement = element.querySelector("img");
-      imgElement.src = data[i]?.image_name;
-    } else if (file) {
-      const {
-        data: { fileName },
-      } = await savePictureService(file);
-
-      const imgElement = element.querySelector("img");
-      imgElement.src = fileName;
-    } */
 
     newImage.onload = () => {
       toPng(element, { crossOrigin: "Anonymous" })
@@ -201,16 +189,6 @@ const SingleMemeComponent = ({ data: newData, img, refetch, file, handleClose })
                   </FitTextDiv>
                 </Rnd>
               ))}
-
-              <div
-                style={{
-                  textShadow: `-1px 0 ${"#000"}, 0 1px ${"#000"}, 1px 0 ${"#000"}, 0 -1px ${"#000"}`,
-                }}
-                className="absolute bottom-[2px] right-1 font-semibold select-none text-white flex items-center gap-1 text-[10px] "
-              >
-                <img className="w-4" src="/icon.png" alt="Yufin ai" />
-                yufin.ai
-              </div>
             </div>
             <p className="text-lg font-semibold">{item.footer}</p>
             <div className="my-10 flex flex-wrap justify-center gap-4 ">

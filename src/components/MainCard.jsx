@@ -4,13 +4,15 @@ import PostHeader from "@/components/PostHeader";
 import PostBody from "@/components/PostBody";
 import PostFooter from "@/components/PostFooter";
 
-const MainCard = ({ postObj, refetch }) => {
+const MainCard = ({ postObj, refetch, isWinner }) => {
   return (
     <div className="max-w-[502px] w-full">
-      <Card withBorder shadow="sm" radius="md">
-        <Card.Section withBorder>
-          <PostHeader padding={true} refetch={refetch} postObj={postObj} close={() => handleClose("postDetails")} />
-        </Card.Section>
+      <Card withBorder shadow="sm" radius="md" pt={isWinner ? 10 : 0}>
+        {isWinner && (
+          <Card.Section withBorder>
+            <PostHeader padding={true} refetch={refetch} postObj={postObj} close={() => handleClose("postDetails")} />
+          </Card.Section>
+        )}
         <Card.Section>
           <PostBody postObj={postObj} />
         </Card.Section>
