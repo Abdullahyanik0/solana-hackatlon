@@ -1,8 +1,8 @@
 import { openai } from "@/utils/helper";
 
-const genarateText = async (text) => {
+const genarateText = async (text, res) => {
   try {
-    const response = await openai.createChatCompletion({
+    const response = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [
         {
@@ -18,7 +18,7 @@ const genarateText = async (text) => {
       temperature: 0.7,
     });
 
-    const memeSentences = response.data.choices[0].message.content
+    const memeSentences = response.choices[0].message.content
       .split("\n")
       .map((sentence) => {
         return sentence.replace(/[0-9".]/g, "");
@@ -34,14 +34,13 @@ const genarateText = async (text) => {
 export default async function handler(req, res) {
   if (req.method === "POST") {
     const { text } = req.body;
-    await genarateText(text).then(async (data) => {
+    await genarateText(text, res).then(async (data) => {
       const memes = await Promise.all(
-        data.map((meme) => {
+        data?.map((meme) => {
           const half = Math.floor(meme.split(" ").length / 2);
 
           return {
             width: "",
-            image_name: image_name,
             captions: [
               {
                 x: 0,
@@ -69,7 +68,6 @@ export default async function handler(req, res) {
       return res.status(200).json({
         msg: "text to meme succes",
         data: memes,
-        credits: user.credits,
       });
     });
   } else {
