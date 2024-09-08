@@ -24,6 +24,7 @@ npm run dev
 ## 📖 Ek Bilgiler
 
 Projede job-schedule ihtiyacını başta uygulama üzerinde yazdık fakat vercel'de bu özelliği kullanmak ücretli olduğu için onun yerine sadece tek bir cron job çalıştıran bir express js uygulaması yazdık.
+Aynı zamanda vercel fotoğraf upload etmemize izin vermediği için localde kayıt açıp fotoğrafları commitledik sizler localinize çekip direk localinizde uygulamayı test edebilirsiniz.
 
 ```bash
 git clone https://github.com/Bekir-Akok/job-schedule.git
