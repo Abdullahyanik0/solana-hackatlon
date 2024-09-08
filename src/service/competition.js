@@ -1,6 +1,7 @@
 import axiosInstance from "@/axios";
 
 const prefix = "competations";
+const feedPrefix = "feed";
 
 export const createCompetitionService = async (data) => {
   const formData = new FormData();
@@ -16,3 +17,5 @@ export const createCompetitionService = async (data) => {
 export const getCompetitionService = async () => axiosInstance.get(`/${prefix}`);
 
 export const getSingleCompetitionService = async (id) => axiosInstance.get(`${prefix}/${id}`);
+
+export const getFeedService = async () => axiosInstance.get(`/${feedPrefix}`);

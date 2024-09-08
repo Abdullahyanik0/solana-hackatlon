@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Rnd } from "react-rnd";
 import { toPng } from "html-to-image";
 import { AiOutlinePlus } from "react-icons/ai";
@@ -9,7 +9,7 @@ import FitTextDiv from "@/components/FitTextDiv";
 import Loading from "@/components/Loading";
 import { Button } from "@mantine/core";
 
-const SingleMemeComponent = ({ data: newData, img, refetch, file, handleClose }) => {
+const SingleMemeComponent = ({ data: newData, img }) => {
   const [border, setBorder] = useState(false);
   const [loading, setLoading] = useState(false);
 

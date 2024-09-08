@@ -3,13 +3,12 @@ import React, { useRef, useState } from "react";
 import { Rnd } from "react-rnd";
 import { toPng } from "html-to-image";
 import { BsDownload } from "react-icons/bs";
-import { AiOutlineStar, AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 import { successNotify, errorNotify } from "./Notification";
 import { useDisclosure } from "@mantine/hooks";
 import Loading from "@/components/Loading";
 import FitTextDiv from "@/components/FitTextDiv";
 
-const MemeComponent = ({ data, setData, handleChange, refetch, saved, file, deleteMemes = false }) => {
+const MemeComponent = ({ data, setData, file }) => {
   const [loading, setLoading] = useState(false);
   const [opened, { open, close }] = useDisclosure(false);
   const imageRef = useRef();
@@ -157,7 +156,6 @@ const MemeComponent = ({ data, setData, handleChange, refetch, saved, file, dele
                   </FitTextDiv>
                 </Rnd>
               ))}
-           
             </div>
             <div className="my-10 flex flex-wrap justify-center gap-4">
               <button
@@ -168,8 +166,6 @@ const MemeComponent = ({ data, setData, handleChange, refetch, saved, file, dele
                 Download
                 <span className="pl-1">{loading ? <Loading color="white" variant="oval" size="sm" /> : <BsDownload size={22} />}</span>
               </button>
-
-             
             </div>
 
             <p className="dark:text-jacarta-300 mb-12 text-center text-sm">Drag and drop meme text to change text position and size</p>
