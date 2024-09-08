@@ -15,12 +15,13 @@ export default async function handler(req, res) {
     try {
       const { fields, image } = await uploadMiddleware(req);
 
-      const outputObject = Object.fromEntries(
+      const { expireTime, ...rest } = Object.fromEntries(
         Object.entries(fields).map(([key, value]) => [key, value[0]])
       );
 
       await db.collection("competitions").insertOne({
-        ...outputObject,
+        expireTime: new Date(expireTime),
+        ...rest,
         image,
         status: "Pending",
       });
