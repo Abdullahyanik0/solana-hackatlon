@@ -18,11 +18,12 @@ export default async function handler(req, res) {
             .find({ competationsId: String(competition?._id) })
             .toArray();
 
-          return { ...applies };
+          return applies;
         })
       );
+      const flattenedData = data.flat();
 
-      res.status(200).json({ message: "Success", data });
+      res.status(200).json({ message: "Success", data: flattenedData });
     } catch (e) {
       console.error(e);
       res.status(500).json({ message: "Internal Server Error" });

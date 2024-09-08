@@ -1,25 +1,15 @@
-import {  Text } from "@mantine/core";
+import { Text } from "@mantine/core";
 import UserAvatar from "./UserAvatar";
 import { useClipboard } from "@mantine/hooks";
 import { useRouter } from "next/router";
 import { formatRelativeTime } from "@/utils/formatter";
 import { BsThreeDotsVertical } from "react-icons/bs";
 
-
-const PostHeader = ({ postObj, refetch, refetchSinglePost, padding }) => {
-  const router = useRouter();
-  const clipboard = useClipboard();
-
+const PostHeader = ({ postObj, isWinner, padding }) => {
   const user = postObj?.user;
 
-  const id = user?._id;
-
   return (
-    <div
-      className={`flex justify-between items-center   ${
-        padding ? "p-3 px-4" : ""
-      } `}
-    >
+    <div className={`flex justify-between items-center   ${padding ? "p-3 px-4" : ""} `}>
       <div className="cursor-pointer">
         <div className="flex items-center gap-2 sm:gap-3 group">
           <UserAvatar user={user} />
@@ -30,12 +20,9 @@ const PostHeader = ({ postObj, refetch, refetchSinglePost, padding }) => {
                 <div className="flex gap-2 items-center">
                   <Text className="group-hover:!text-first-color transition-all !font-semibold tracking-wide capitalize">
                     {/* {user?.fullName} {user?.lastName}{" "} */}
-                    SuperTeamTr
+                    {isWinner ? isWinner : "SuperTeamTr"}
                   </Text>
-                  <Text
-                    c="dimmed"
-                    className="!font-light !text-xs !pt-1 cursor-default"
-                  >
+                  <Text c="dimmed" className="!font-light !text-xs !pt-1 cursor-default">
                     {formatRelativeTime("07-09-2024")}
                   </Text>
                 </div>

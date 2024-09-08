@@ -34,7 +34,7 @@ export default function MyApp(props) {
   return (
     <>
       <Head>
-        <title>Meme Makers</title>
+        <title>Meme Master</title>
       </Head>
       <ConnectionProvider endpoint={network}>
         <WalletProvider wallets={wallets} autoConnect>
@@ -47,18 +47,18 @@ export default function MyApp(props) {
                     <div className="flex gap-4 items-center">
                       <Link className="hover:text-white" href="/">
                         <Text className="sm:text-lg" fw={600}>
-                          Home
+                          Competitions 🏁
                         </Text>
                       </Link>
                       <Link className="hover:text-white" href="/feed">
                         <Text className="sm:text-lg" fw={600}>
-                          Feed
+                          Feed 📚
                         </Text>
                       </Link>
 
                       <Link className="hover:text-white" href="/create">
                         <Text className="sm:text-lg" fw={600}>
-                          Create meme
+                          Create meme 👽
                         </Text>
                       </Link>
                       <Link className="hover:text-white" href="/generate">

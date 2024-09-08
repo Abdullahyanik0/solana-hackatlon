@@ -18,11 +18,9 @@ const genarateText = async (text, res) => {
       temperature: 0.7,
     });
 
-    const memeSentences = response.choices[0].message.content
-      .split("\n")
-      .map((sentence) => {
-        return sentence.replace(/[0-9".]/g, "");
-      });
+    const memeSentences = response.choices[0].message.content.split("\n").map((sentence) => {
+      return sentence.replace(/[0-9".]/g, "");
+    });
 
     return memeSentences;
   } catch (err) {
@@ -35,35 +33,33 @@ export default async function handler(req, res) {
   if (req.method === "POST") {
     const { text } = req.body;
     await genarateText(text, res).then(async (data) => {
-      const memes = await Promise.all(
-        data?.map((meme) => {
-          const half = Math.floor(meme.split(" ").length / 2);
+      const memes = await data?.map((meme) => {
+        const half = Math.floor(meme.split(" ").length / 2);
 
-          return {
-            width: "",
-            captions: [
-              {
-                x: 0,
-                y: 0,
-                witdh: 200,
-                height: 40,
-                text: meme.split(" ").slice(0, half).join(" "),
-                fontColor: "#fff",
-                borderColor: "#000",
-              },
-              {
-                x: 0,
-                y: 100,
-                witdh: 200,
-                height: 40,
-                text: meme.split(" ").slice(half).join(" "),
-                fontColor: "#fff",
-                borderColor: "#000",
-              },
-            ],
-          };
-        })
-      );
+        return {
+          width: "",
+          captions: [
+            {
+              x: 0,
+              y: 0,
+              witdh: 200,
+              height: 40,
+              text: meme.split(" ").slice(0, half).join(" "),
+              fontColor: "#fff",
+              borderColor: "#000",
+            },
+            {
+              x: 0,
+              y: 100,
+              witdh: 200,
+              height: 40,
+              text: meme.split(" ").slice(half).join(" "),
+              fontColor: "#fff",
+              borderColor: "#000",
+            },
+          ],
+        };
+      });
 
       return res.status(200).json({
         msg: "text to meme succes",

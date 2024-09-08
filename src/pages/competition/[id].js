@@ -26,7 +26,7 @@ const CompetitionDetail = () => {
 
   const { data, error, isLoading, refetch } = useQuery(["competitions-detail"], fetchCompetitions);
 
-  const { days, hours, minutes, seconds } = useCountdown(data?.competitionDetail?.expireTime);
+  const { days, hours, minutes, seconds, isFinish } = useCountdown(data?.competitionDetail?.expireTime);
 
   const sendImage = async (e) => {
     if (isWinner) return;
@@ -40,7 +40,6 @@ const CompetitionDetail = () => {
   };
 
   const isWinner = data?.competitionDetail?.winner;
-  const isFinish = days != 0 && hours != 0 && minutes != 0 && seconds;
 
   return (
     <div>
@@ -64,7 +63,7 @@ const CompetitionDetail = () => {
               <Text c="dimmed">{data?.competitionDetail?.description} </Text>
               <div className="flex justify-between items-center mt-4">
                 <Text c="dimmed">
-                  {isFinish ? (
+                  {!isFinish ? (
                     <>
                       Remaining time: {days}:{hours}:{minutes}:{seconds}
                     </>
@@ -106,7 +105,7 @@ const CompetitionDetail = () => {
       )}
       {data?.applies.length == 0 && !isLoading && (
         <div className="flex justify-center items-center">
-          <h2> Henüz meme eklenmedi.</h2>
+          <h2> No meme has been added yet.</h2>
         </div>
       )}
       {isLoading && (

@@ -10,7 +10,7 @@ const MainCard = ({ postObj, refetch, isWinner }) => {
       <Card withBorder shadow="sm" radius="md" pt={isWinner ? 10 : 0}>
         {isWinner && (
           <Card.Section withBorder>
-            <PostHeader padding={true} refetch={refetch} postObj={postObj} close={() => handleClose("postDetails")} />
+            <PostHeader  padding={true} refetch={refetch} postObj={postObj} close={() => handleClose("postDetails")} />
           </Card.Section>
         )}
         <Card.Section>

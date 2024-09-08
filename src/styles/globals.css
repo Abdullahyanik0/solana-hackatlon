@@ -30,8 +30,10 @@
   background-clip: padding-box;
 }
 
-/* Style your items */
 .my-masonry-grid_column > a > div {
+  @apply mb-4 !important;
+}
+.my-masonry-grid_column  > div {
   @apply mb-4 !important;
 }
 

@@ -1,17 +1,7 @@
 import { useState, useEffect } from "react";
 
 const useCountdown = (targetDate) => {
-  const [timeLeft, setTimeLeft] = useState(getTimeLeft(targetDate));
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTimeLeft(getTimeLeft(targetDate));
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [targetDate]);
-
-  function getTimeLeft(targetDate) {
+  const calculateTimeLeft = (targetDate) => {
     const now = new Date();
     const endDate = new Date(targetDate);
     const difference = endDate - now;
@@ -24,18 +14,29 @@ const useCountdown = (targetDate) => {
     const days = Math.floor(difference / (1000 * 60 * 60 * 24));
 
     return { days, hours, minutes, seconds };
-  }
+  };
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(targetDate));
+  const [isExpired, setIsExpired] = useState(false);
 
-  function formatTimeUnit(value) {
-    const formatValue = value.toString().padStart(2, "0");
-    return Number(formatValue);
-  }
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const time = calculateTimeLeft(targetDate);
+      setTimeLeft(time);
+      if (time.days == 0 && time.hours <= 0 && time.minutes <= 0 && time.seconds <= 0) {
+        setIsExpired(true);
+        clearInterval(interval);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [targetDate]);
 
   return {
-    days: formatTimeUnit(timeLeft.days),
-    hours: formatTimeUnit(timeLeft.hours),
-    minutes: formatTimeUnit(timeLeft.minutes),
-    seconds: formatTimeUnit(timeLeft.seconds),
+    days: timeLeft.days,
+    hours: timeLeft.hours,
+    minutes: timeLeft.minutes,
+    seconds: timeLeft.seconds,
+    isFinish: isExpired,
   };
 };
 

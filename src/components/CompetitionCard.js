@@ -4,10 +4,9 @@ import { Card, Image, Text, Badge, Button, Group } from "@mantine/core";
 import Link from "next/link";
 
 const CompetitionCard = ({ item }) => {
-  const { days, hours, minutes, seconds } = useCountdown(item?.expireTime);
+  const { days, hours, minutes, seconds, isFinish } = useCountdown(item?.expireTime);
 
   const isWinner = item?.winner;
-  const isFinish = days != 0 && hours != 0 && minutes != 0 && seconds != 0;
 
   return (
     <Link href={`/competition/${item?._id}`}>
@@ -30,7 +29,7 @@ const CompetitionCard = ({ item }) => {
         </Text>
         <div className="flex justify-between items-center mt-4">
           <Text size="sm" c="dimmed">
-            {isFinish ? (
+            {!isFinish ? (
               <>
                 Remaining time: {days}:{hours}:{minutes}:{seconds}
               </>
@@ -42,11 +41,11 @@ const CompetitionCard = ({ item }) => {
             Reward: <span className="">{item?.reward} (Sol)</span>
           </Text>
         </div>
-          {isWinner && (
-            <Text className="break-words " mt="lg" c="dimmed">
-              Winner: <span className="">{isWinner}</span>
-            </Text>
-          )}
+        {isWinner && (
+          <Text className="break-words " mt="lg" c="dimmed">
+            Winner: <span className="">{isWinner}</span>
+          </Text>
+        )}
 
         <Button fullWidth mt="md" radius="md">
           Join Competition

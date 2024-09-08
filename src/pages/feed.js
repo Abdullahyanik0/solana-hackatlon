@@ -5,7 +5,7 @@ import React from "react";
 import Masonry from "react-masonry-css";
 import { useQuery } from "react-query";
 
-const breakpointColumnsObj = { default: 4, 1000: 2, 750: 1 };
+const breakpointColumnsObj = { default: 3, 1000: 2, 750: 1 };
 
 const Feed = () => {
   const fetchFeed = async () => {
@@ -14,13 +14,13 @@ const Feed = () => {
   };
 
   const { data, error, isLoading, refetch } = useQuery(["feed"], fetchFeed);
-
   return (
     <div>
+      <h1 className="mb-8">Feeds</h1>
       {data && (
         <Masonry breakpointCols={breakpointColumnsObj} className="my-masonry-grid w-full" columnClassName="my-masonry-grid_column">
           {data?.map((postObj, i) => {
-            const isWinner = postObj?.isWinner;
+            const isWinner = postObj?.creator;
             return <MainCard isWinner={isWinner} refetch={refetch} key={postObj._id + i} postObj={{ ...postObj }} />;
           })}
         </Masonry>
