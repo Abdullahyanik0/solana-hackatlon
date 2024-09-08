@@ -29,7 +29,6 @@ const Competition = () => {
 
   const { data, error, isLoading, refetch } = useQuery(["competitions"], fetchCompetitions);
 
-  console.log(connection);
   const form = useForm({
     initialValues: {
       name: "",
@@ -95,7 +94,6 @@ const Competition = () => {
     }
   }, [publicKey, sendTransaction, signTransaction, connection]);
 
-  console.log(data);
   return (
     <div className="w-full">
       <div className="mb-4 flex justify-between items-center gap-4">

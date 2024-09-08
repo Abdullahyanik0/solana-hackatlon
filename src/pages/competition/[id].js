@@ -26,8 +26,6 @@ const CompetitionDetail = () => {
 
   const { data, error, isLoading, refetch } = useQuery(["competitions-detail"], fetchCompetitions);
 
-  console.log("data", data);
-
   const { days, hours, minutes, seconds } = useCountdown(data?.competitionDetail?.expireTime);
 
   const sendImage = async (e) => {

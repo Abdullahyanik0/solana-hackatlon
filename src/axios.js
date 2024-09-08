@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "https://solana-hackatlon-livid.vercel.app/",
+  baseURL: "https://solana-hackatlon-livid.vercel.app/api",
 });
 
 axiosInstance.setAuthHeader = (token) => {
