@@ -24,9 +24,11 @@ const genarateText = async (text) => {
       temperature: 0.7,
     });
 
-    const memeSentences = response.data.choices[0].message.content.split("\n").map((sentence) => {
-      return sentence.replace(/[0-9".]/g, "");
-    });
+    const memeSentences = response.data.choices[0].message.content
+      .split("\n")
+      .map((sentence) => {
+        return sentence.replace(/[0-9".]/g, "");
+      });
 
     return memeSentences;
   } catch (err) {
@@ -38,14 +40,14 @@ const genarateText = async (text) => {
 export default async function handler(req, res) {
   if (req.method === "GET") {
     try {
-      await genarateText(text, outputLang, 6).then(async (data) => {
+      await genarateText(text).then(async (data) => {
         const memes = await Promise.all(
           data.map((meme) => {
             const half = Math.floor(meme.split(" ").length / 2);
 
             return {
               width: "",
-              image_name: image_name,
+              image_name: req.query.image_name,
               captions: [
                 {
                   x: 0,
