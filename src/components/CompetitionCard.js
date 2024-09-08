@@ -26,14 +26,12 @@ const CompetitionCard = ({ item }) => {
         </Text>
         <div className="flex justify-between items-center mt-4">
           <Text size="sm" c="dimmed">
-            Remaining time: {days}:{hours}:{minutes}:{seconds} 
+            Remaining time: {days}:{hours}:{minutes}:{seconds}
           </Text>
-          <Text  size="sm" c="dimmed">
+          <Text size="sm" c="dimmed">
             Reward: <span className="">{item?.reward} (Sol)</span>
           </Text>
         </div>
-
-        
 
         <Button fullWidth mt="md" radius="md">
           Join Competition

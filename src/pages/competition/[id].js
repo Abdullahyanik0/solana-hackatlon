@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import MainCard from "@/components/MainCard";
 import { errorNotify } from "@/components/Notification";
-import { memeData } from "@/data";
 import useCountdown from "@/hooks/use-countdown";
 import { getSingleCompetitionService } from "@/service/competition";
 import { createMemeService } from "@/service/meme";

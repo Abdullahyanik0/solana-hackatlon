@@ -1,13 +1,10 @@
-import React, { useState } from "react";
-import { Modal, Text } from "@mantine/core";
+import {  Text } from "@mantine/core";
 import UserAvatar from "./UserAvatar";
-
 import { useClipboard } from "@mantine/hooks";
 import { useRouter } from "next/router";
 import { formatRelativeTime } from "@/utils/helper";
 import { BsThreeDotsVertical } from "react-icons/bs";
 
-//local imports
 
 const PostHeader = ({ postObj, refetch, refetchSinglePost, padding }) => {
   const router = useRouter();
