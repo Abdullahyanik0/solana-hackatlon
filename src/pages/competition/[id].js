@@ -24,11 +24,16 @@ const CompetitionDetail = () => {
     return data?.data?.data;
   };
 
-  const { data, error, isLoading, refetch } = useQuery(["competitions-detail"], fetchCompetitions);
+  const { data, error, isLoading, refetch } = useQuery(
+    ["competitions-detail"],
+    fetchCompetitions
+  );
 
   console.log("data", data);
 
-  const { days, hours, minutes, seconds } = useCountdown(data?.competitionDetail?.expireTime);
+  const { days, hours, minutes, seconds } = useCountdown(
+    data?.competitionDetail?.expireTime
+  );
 
   const sendImage = async (e) => {
     if (!walletAdress) return errorNotify("Please Log in");
@@ -42,63 +47,86 @@ const CompetitionDetail = () => {
 
   return (
     <div>
-    {!isLoading && (
+      {!isLoading && (
+        <Card
+          className="flex flex-col md:flex-row gap-4 sm:gap-10 !justify-between"
+          shadow="sm"
+          padding="lg"
+          radius="md"
+          withBorder
+        >
+          <div className="max-w-sm w-full">
+            <img
+              src={data?.competitionDetail?.image}
+              alt={data?.competitionDetail?.name}
+            />
+          </div>
 
-      <Card className="flex flex-col md:flex-row gap-4 sm:gap-10 !justify-between" shadow="sm" padding="lg" radius="md" withBorder>
-        <div className="">
-          <img src={data?.competitionDetail?.image} alt={data?.competitionDetail?.name} />
-        </div>
+          <div className="w-full flex flex-col justify-between">
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col sm:flex-row text-start  justify-between gap-2 my-4 sm:items-center">
+                <Text className="text-2xl md:text-4xl tewi" fw={500}>
+                  {data?.competitionDetail?.name}
+                </Text>
+                <Badge className="w-fit" color="grape" variant="light">
+                  Solana (SOL)
+                </Badge>
+              </div>
 
-        <div className="w-full flex flex-col justify-between">
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col sm:flex-row text-start  justify-between gap-2 my-4 sm:items-center">
-              <Text className="text-2xl md:text-4xl tewi" fw={500}>
-                {data?.competitionDetail?.name}
+              <Text lineClamp={2} size="sm" c="dimmed">
+                {data?.competitionDetail?.description}{" "}
               </Text>
-              <Badge className="w-fit" color="grape" variant="light">
-                Solana (SOL)
-              </Badge>
+              <div className="flex justify-between items-center mt-4">
+                <Text size="sm" c="dimmed">
+                  Remaining time: {days}:{hours}:{minutes}:{seconds}
+                </Text>
+                <Text size="sm" c="dimmed">
+                  Reward:{" "}
+                  <span className="">
+                    {data?.competitionDetail?.reward} (Sol)
+                  </span>
+                </Text>
+              </div>
             </div>
-
-            <Text lineClamp={2} size="sm" c="dimmed">
-              {data?.competitionDetail?.description}{" "}
-            </Text>
-            <div className="flex justify-between items-center mt-4">
-              <Text size="sm" c="dimmed">
-                Remaining time: {days}:{hours}:{minutes}:{seconds}
-              </Text>
-              <Text size="sm" c="dimmed">
-                Reward: <span className="">{data?.competitionDetail?.reward} (Sol)</span>
-              </Text>
+            <div className="flex justify-start">
+              <FileButton
+                onChange={(e) => sendImage(e)}
+                accept="image/png,image/jpeg"
+              >
+                {(props) => (
+                  <Button {...props} mt="md" radius="md">
+                    Add Meme
+                  </Button>
+                )}
+              </FileButton>
             </div>
           </div>
-          <div className="flex justify-start">
-            <FileButton onChange={(e) => sendImage(e)} accept="image/png,image/jpeg">
-              {(props) => (
-                <Button {...props} mt="md" radius="md">
-                  Add Meme
-                </Button>
-              )}
-            </FileButton>
-          </div>
-        </div>
-      </Card>
-    )}
+        </Card>
+      )}
 
-      <h1 className="font-display text-jacarta-700  text-3xl my-8 dark:text-white">Created memes</h1>
+      <h1 className="font-display text-jacarta-700  text-3xl my-8 dark:text-white">
+        Created memes
+      </h1>
 
       {data?.applies && (
-        <Masonry breakpointCols={breakpointColumnsObj} className="my-masonry-grid w-full" columnClassName="my-masonry-grid_column">
+        <Masonry
+          breakpointCols={breakpointColumnsObj}
+          className="my-masonry-grid w-full"
+          columnClassName="my-masonry-grid_column"
+        >
           {data?.applies?.map((postObj, i) => (
-            <MainCard key={postObj._id + i} postObj={{ ...postObj }} />
+            <MainCard
+              refetch={refetch}
+              key={postObj._id + i}
+              postObj={{ ...postObj }}
+            />
           ))}
         </Masonry>
       )}
-      {!data?.applies && (
+      {!data?.applies && !isLoading && (
         <div className="flex justify-center items-center">
-          <h2>  Henüz meme eklenmedi.</h2>
+          <h2> Henüz meme eklenmedi.</h2>
         </div>
-      
       )}
       {isLoading && (
         <div className="flex justify-center items-center">

@@ -17,6 +17,7 @@
     "@mantine/notifications": "^6.0.13",
     "@mantine/nprogress": "^6.0.13",
     "@metaplex-foundation/js": "^0.20.1",
+    "@solana/spl-token": "^0.4.8",
     "@solana/wallet-adapter-base": "^0.9.23",
     "@solana/wallet-adapter-phantom": "^0.9.24",
     "@solana/wallet-adapter-react": "^0.15.35",
