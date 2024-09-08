@@ -38,7 +38,8 @@ const genarateText = async (text) => {
 };
 
 export default async function handler(req, res) {
-  if (req.method === "GET") {
+  if (req.method === "POST") {
+    const { image_name, text } = req.body;
     try {
       await genarateText(text).then(async (data) => {
         const memes = await Promise.all(
@@ -47,7 +48,7 @@ export default async function handler(req, res) {
 
             return {
               width: "",
-              image_name: req.query.image_name,
+              image_name: image_name,
               captions: [
                 {
                   x: 0,
