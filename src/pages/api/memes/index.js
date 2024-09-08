@@ -39,50 +39,44 @@ const genarateText = async (text) => {
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
-    const { image_name, text } = req.body;
-    try {
-      await genarateText(text).then(async (data) => {
-        const memes = await Promise.all(
-          data.map((meme) => {
-            const half = Math.floor(meme.split(" ").length / 2);
+    await genarateText(req.body.text).then(async (data) => {
+      const memes = await Promise.all(
+        data.map((meme) => {
+          const half = Math.floor(meme.split(" ").length / 2);
 
-            return {
-              width: "",
-              image_name: image_name,
-              captions: [
-                {
-                  x: 0,
-                  y: 0,
-                  witdh: 200,
-                  height: 40,
-                  text: meme.split(" ").slice(0, half).join(" "),
-                  fontColor: "#fff",
-                  borderColor: "#000",
-                },
-                {
-                  x: 0,
-                  y: 300,
-                  witdh: 200,
-                  height: 40,
-                  text: meme.split(" ").slice(half).join(" "),
-                  fontColor: "#fff",
-                  borderColor: "#000",
-                },
-              ],
-            };
-          })
-        );
+          return {
+            width: "",
+            image_name: image_name,
+            captions: [
+              {
+                x: 0,
+                y: 0,
+                witdh: 200,
+                height: 40,
+                text: meme.split(" ").slice(0, half).join(" "),
+                fontColor: "#fff",
+                borderColor: "#000",
+              },
+              {
+                x: 0,
+                y: 300,
+                witdh: 200,
+                height: 40,
+                text: meme.split(" ").slice(half).join(" "),
+                fontColor: "#fff",
+                borderColor: "#000",
+              },
+            ],
+          };
+        })
+      );
 
-        return res.status(200).json({
-          msg: "text to meme succes",
-          data: memes,
-          credits: user.credits,
-        });
+      return res.status(200).json({
+        msg: "text to meme succes",
+        data: memes,
+        credits: user.credits,
       });
-    } catch (e) {
-      console.error(e);
-      res.status(500).json({ message: "Internal Server Error" });
-    }
+    });
   } else {
     res.setHeader("Allow", ["POST"]);
     res.status(405).end(`Method ${req.method} Not Allowed`);
