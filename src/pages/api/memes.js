@@ -1,11 +1,5 @@
 import { openai } from "@/utils/helper";
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 const genarateText = async (text) => {
   try {
     const response = await openai.createChatCompletion({
@@ -39,7 +33,8 @@ const genarateText = async (text) => {
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
-    await genarateText(req.body.text).then(async (data) => {
+    const { text } = req.body;
+    await genarateText(text).then(async (data) => {
       const memes = await Promise.all(
         data.map((meme) => {
           const half = Math.floor(meme.split(" ").length / 2);
