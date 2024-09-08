@@ -27,7 +27,8 @@ const useCountdown = (targetDate) => {
   }
 
   function formatTimeUnit(value) {
-    return value.toString().padStart(2, "0");
+    const formatValue = value.toString().padStart(2, "0");
+    return Number(formatValue);
   }
 
   return {

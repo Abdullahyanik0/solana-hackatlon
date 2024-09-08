@@ -2,13 +2,10 @@
 import React, { useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 
-//local imports
 import { Rnd } from "react-rnd";
-import { useViewportSize } from "@mantine/hooks";
 import FitTextDiv from "@/components/FitTextDiv";
 
 const PostBody = ({ postObj, handleOpen }) => {
-  const router = useRouter();
   const imageRef = useRef();
 
   return (

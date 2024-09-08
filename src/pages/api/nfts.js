@@ -27,7 +27,6 @@ export default async function handler(req, res) {
         keypairIdentity(senderKeypair)
       );
 
-      //ımage upload doesnt work!!
       const { nft } = await metaplex.nfts().create({
         uri: "https://miro.medium.com/v2/resize:fit:1200/0*32FMZrTapTYRrKoc.jpeg",
         name: `${name}-winner`,

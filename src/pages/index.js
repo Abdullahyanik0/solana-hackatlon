@@ -1,121 +1,170 @@
-/* eslint-disable @next/next/no-img-element */
-import React, { useEffect, useState } from "react";
-import { FileUploader } from "react-drag-drop-files";
-import { LuMousePointerClick } from "react-icons/lu";
-import SingleMemeComponent from "@/components/SingleMemeComponent";
-import { useRouter } from "next/router";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { Button, Modal, TextInput, NumberInput, Textarea, FileInput, Loader } from "@mantine/core";
+import CompetitionCard from "@/components/CompetitionCard";
+import { useForm } from "@mantine/form";
+import { useDisclosure } from "@mantine/hooks";
+import { DateTimePicker } from "@mantine/dates";
+import Masonry from "react-masonry-css";
+import { createCompetitionService, getCompetitionService } from "@/service/competition";
+import { useQuery } from "react-query";
+import { useCallback, useState } from "react";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { errorNotify } from "@/components/Notification";
+import { Connection, PublicKey, SystemProgram, Transaction } from "@solana/web3.js";
 
-const MemeMaker = () => {
-  const [file, setFile] = useState("");
-  const [files, setFiles] = useState("");
-  const [img, setImg] = useState(null);
-  const [imgQuery, setImgQuery] = useState(false);
+const breakpointColumnsObj = { default: 4, 1000: 2, 750: 1 };
 
-  const { publicKey } = useWallet();
+const Competition = () => {
+  const [opened, { open, close }] = useDisclosure(false);
 
-  const fileTypes = ["JPG", "PNG", "GIF"];
+  const [loading, setLoading] = useState(false);
 
-  const handleChange = (file) => {
-    setFile(file);
-    setFiles(file);
-    setImg(URL.createObjectURL(file));
+  const { connection } = useConnection();
+  const { publicKey, sendTransaction, signTransaction } = useWallet();
+  const walletAdress = publicKey?.toBase58();
+
+  const fetchCompetitions = async () => {
+    const data = await getCompetitionService();
+    return data?.data?.data;
   };
 
-  const handleClearClick = () => {
-    setFile("");
-    setImg(null);
-  };
-  const [memeData, setMemeData] = useState([
-    {
-      width: 500,
-      image_name: img,
-      captions: [
-        {
-          x: 75,
-          y: 50,
-          borderColor: "#000",
-          fontColor: "#ffffff",
-          fontSize: 20,
-          fontFamily: null,
-          text: "Meme text goes here",
-          width: 350,
-          height: 41,
-        },
-        {
-          x: 75,
-          y: 200,
-          borderColor: "#000",
-          fontColor: "#ffffff",
-          fontSize: 20,
-          fontFamily: null,
-          text: "Meme text goes here",
-          width: 350,
-          height: 41,
-        },
-      ],
+  const { data, error, isLoading, refetch } = useQuery(["competitions"], fetchCompetitions);
+
+  const form = useForm({
+    initialValues: {
+      name: "",
+      description: "",
+      reward: "",
+      expireTime: "",
+      image: "",
     },
-  ]);
 
-  /*   const containerStyle = {
-    backgroundImage: img ? `url(${img})` : "none",
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-  }; */
-
-  const { query, isReady, push } = useRouter();
-
-  const newData = memeData.map((item) => {
-    return { ...item, image_name: query.image };
+    validate: {
+      name: (value) => (value.length > 0 ? null : "Contest name is required"),
+      description: (value) => (value.length > 0 ? null : "Description is required"),
+      reward: (value) => (value && value > 0 ? null : "Reward amount must be a positive value"),
+      expireTime: (value) => {
+        const now = new Date();
+        const expireDate = new Date(value);
+        return expireDate > now ? null : "Expiration date must be in the future";
+      },
+    },
   });
 
-  useEffect(() => {
-    setMemeData(newData);
-    setImgQuery(!!query.image ? true : false);
-    setFile(query.image);
-    setFiles(query.image);
-    setImg(query.image);
-    if (isReady) {
-      push({}, undefined, { shallow: true });
+  const formOnSubmit = form.onSubmit(async (values) => {
+    setLoading(true);
+    try {
+      await handleTransfer();
+      await createCompetitionService({ ...values, creator: walletAdress });
+      form.reset();
+      close();
+      refetch();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
-  }, []);
+  });
+  const handleTransfer = useCallback(async () => {
+    const recipientAddress = "HehJjPEkBkCehC3qhSdcbDS9okKXZPpZTxjLFN8C7Sft";
+    const recipientPubKey = new PublicKey(recipientAddress);
+    const lamports = 0.1 * 1000000000;
+
+    try {
+      const connection = new Connection("https://api.testnet.solana.com", "confirmed");
+
+      const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
+
+      const transaction = new Transaction().add(
+        SystemProgram.transfer({
+          fromPubkey: publicKey,
+          toPubkey: recipientPubKey,
+          lamports,
+        })
+      );
+
+      transaction.recentBlockhash = blockhash;
+      transaction.feePayer = publicKey;
+
+      const signedTransaction = await signTransaction(transaction);
+
+      const signature = await sendTransaction(signedTransaction, connection);
+    } catch (error) {
+      console.error("Transfer işlemi başarısız:", error);
+      alert("Transfer işlemi başarısız oldu.");
+    }
+  }, [publicKey, sendTransaction, signTransaction, connection]);
 
   return (
-    <div>
-      <div className="flex flex-col items-center mt-20 w-full">
-        <div className="w-11/12 max-w-5xl mt-16 flex flex-col items-center"></div>
-        <h1 className="font-display text-jacarta-700  text-3xl text-center dark:text-white">
-          {file ? "Make a meme" : "Upload an image to get started"}
-        </h1>
-        <div className="mt-6">
-          <div className="mb-6">
-            {file && <SingleMemeComponent file={imgQuery ? null : files} data={memeData} img={img} imgQuery={imgQuery} />}
-
-            {!file && (
-              <div className="min-w-[400px] min-h-[250px] group bg-black w-full  group relative flex max-w-md rounded-lg border-2 border-dashed  text-center">
-                <div className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 group-hover:hidden">
-                  <div className="relative z-10 cursor-pointer">
-                    <LuMousePointerClick size={32} />
-                  </div>
-                  <p className=" mx-auto text-xs text-white ">JPG, PNG Max size: 5 MB</p>
-                </div>
-                <FileUploader handleChange={handleChange} name="file" types={fileTypes} classes="file-drag" maxSize={100} minSize={0} />
-              </div>
-            )}
-            {file && (
-              <button onClick={handleClearClick} className="mt-2 text-sm text-jacarta-700 dark:text-white hover:underline">
-                Delete image
-              </button>
-            )}
-          </div>
-        </div>
+    <div className="w-full">
+      <div className="mb-4 flex justify-between items-center gap-4">
+        <h1>Competition</h1>
+        <Button
+          onClick={() => {
+            walletAdress ? open() : errorNotify("Please log in");
+          }}
+        >
+          Create Competition
+        </Button>
       </div>
+      {data && (
+        <Masonry breakpointCols={breakpointColumnsObj} className="my-masonry-grid w-full" columnClassName="my-masonry-grid_column">
+          {data?.map((item, i) => (
+            <CompetitionCard key={i} item={item} />
+          ))}
+        </Masonry>
+      )}
+      {!data ||
+        (data?.length == 0 && (
+          <div className="flex justify-center items-center">
+            <h2> No task has been added yet.</h2>
+          </div>
+        ))}
+      {isLoading && (
+        <div className="flex justify-center items-center">
+          <Loader size="lg" />
+        </div>
+      )}
+      {error && (
+        <div className="flex justify-center items-center">
+          <h2>An error has occurred</h2>
+        </div>
+      )}
+
+      <Modal size="md" centered opened={opened} onClose={close} title="Create Competition">
+        <form className="space-y-4" onSubmit={formOnSubmit}>
+          {form.values.image ? (
+            <div className="relative">
+              <img src={URL.createObjectURL(form.values.image)} alt="image" />
+              <button
+                onClick={() => form.setFieldValue("image", null)}
+                type="button"
+                className="absolute top-2 right-2 bg-red-400 border-red-600 w-6 h-6 rounded-full"
+              >
+                x
+              </button>
+            </div>
+          ) : (
+            <FileInput label="Upload image" placeholder="Upload image" {...form.getInputProps("image")} accept="image/png,image/jpeg" />
+          )}
+
+          <TextInput label="Competition Name" placeholder="Competition name" {...form.getInputProps("name")} />
+          <TextInput type="decimal" label="Reward" placeholder="Reward amount" {...form.getInputProps("reward")} min={0} />
+          <Textarea label="Description" placeholder="Competition description" {...form.getInputProps("description")} />
+          <DateTimePicker
+            minDate={new Date()}
+            valueFormat="DD/MM/YYYY HH:mm:ss"
+            label="Expiration Time"
+            placeholder="Expiration time (e.g., 12.02.2024)"
+            {...form.getInputProps("expireTime")}
+          />
+
+          <Button disabled={!form.values.image} loading={loading} fullWidth mt="md" type="submit">
+            Submit
+          </Button>
+        </form>
+      </Modal>
     </div>
   );
 };
 
-export default MemeMaker;
-
-MemeMaker.title = "Self o Matic";
-MemeMaker.isAuthProtected = true;
-MemeMaker.layout = true;
+export default Competition;

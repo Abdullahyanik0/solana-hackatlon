@@ -1,6 +1,7 @@
 import axiosInstance from "@/axios";
 
 const prefix = "apply";
+const memePrefix = "memes";
 
 export const createMemeService = async (data, id, creator) => {
   const formData = new FormData();
@@ -11,7 +12,9 @@ export const createMemeService = async (data, id, creator) => {
     handleNotification: true,
   });
 };
-export const likePostService = async (id, address) =>
-  axiosInstance.put(`${prefix}/${id}/like`, { address });
-export const unlikePostService = async (id, address) =>
-  axiosInstance.put(`${prefix}/${id}/unlike`, { address });
+export const likePostService = async (id, address) => axiosInstance.put(`${prefix}/${id}/like`, { address });
+export const unlikePostService = async (id, address) => axiosInstance.put(`${prefix}/${id}/unlike`, { address });
+
+export const getMemeTemplate = async (text) => {
+ return axiosInstance.post(`${memePrefix}`, { text: text });
+};

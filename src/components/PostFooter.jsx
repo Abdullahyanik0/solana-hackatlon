@@ -3,12 +3,14 @@ import { BiDislike, BiLike, BiSolidDislike, BiSolidLike } from "react-icons/bi";
 import { TbMessageShare } from "react-icons/tb";
 import { likePostService, unlikePostService } from "../service/meme";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { errorNotify } from "./Notification";
 
 const PostFooter = ({ postObj, refetch, handleOpen, modal, handleClose }) => {
   const { publicKey } = useWallet();
   const walletAdress = publicKey?.toBase58();
 
   const handleLike = async (upOrDown) => {
+    if(!walletAdress)  return errorNotify("Please log in")
     upOrDown !== "up"
       ? await unlikePostService(postObj?._id, walletAdress)
       : await likePostService(postObj?._id, walletAdress);

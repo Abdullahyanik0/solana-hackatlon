@@ -53,7 +53,7 @@ export default async function handler(req, res) {
               },
               {
                 x: 0,
-                y: 300,
+                y: 100,
                 witdh: 200,
                 height: 40,
                 text: meme.split(" ").slice(half).join(" "),
