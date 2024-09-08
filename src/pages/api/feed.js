@@ -15,9 +15,10 @@ export default async function handler(req, res) {
         await competitions.map(async (competition) => {
           const applies = await db
             .collection("applies")
-            .countDocuments({ competationsId: competition?._id });
+            .find({ competationsId: String(competition?._id) })
+            .toArray();
 
-          return { ...competition, applies };
+          return { ...applies };
         })
       );
 
