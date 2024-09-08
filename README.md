@@ -1,40 +1,34 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Meme Master
 
-## Getting Started
+Meme Master, meme severler için geliştirilmiş yenilikçi bir sosyal ağ platformudur. Kullanıcıların hem eğlenip hem de ödüller kazanabileceği, yaratıcı meme içerikleri üretebileceği ve paylaşabileceği bir ortam sunar. Platform, yarışmalar düzenleyerek kullanıcıların meme yeteneklerini sergilemelerine olanak tanır ve kazananlara ödüller dağıtır. Ayrıca, çeşitli araçlarla kullanıcıların hızlı ve kolay bir şekilde meme oluşturmasını sağlar.
 
-First, run the development server:
+## 🎯 Özellikler
+
+- **Meme Yarışmaları**: Kullanıcılar platformda düzenlenen meme yarışmalarına katılabilir, oy alabilir ve yarışmayı kazanarak ödüller kazanabilir.
+- **Ödüllü Yarışmalar**: Yarışmalar sonucunda kazananlara Solana ağı üzerinden kripto para ödülleri dağıtılır.
+- **Meme Üretim Araçları**: Platform, kullanıcıların kendi memelerini yaratabilmeleri için çeşitli yaratıcı araçlar sunar.
+- **Sosyal Ağ**: Kullanıcılar diğer meme severlerle etkileşimde bulunabilir.
+- **Solana Entegrasyonu**: Meme Master, Solana blockchain'i ile entegredir ve kripto ödülleri bu ağ üzerinden dağıtılır.
+
+## 🚀 Kurulum
+
+Meme Master projesini yerel makinenizde çalıştırmak için şu adımları takip edebilirsiniz:
 
 ```bash
+git clone https://github.com/Abdullahyanik0/solana-hackatlon.git
+cd solana-hackatlon
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📖 Ek Bilgiler
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+Projede job-schedule ihtiyacını başta uygulama üzerinde yazdık fakat vercel'de bu özelliği kullanmak ücretli olduğu için onun yerine sadece tek bir cron job çalıştıran bir express js uygulaması yazdık.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+```bash
+git clone https://github.com/Bekir-Akok/job-schedule.git
+cd job-schedule
+npm install
+npm run dev
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
