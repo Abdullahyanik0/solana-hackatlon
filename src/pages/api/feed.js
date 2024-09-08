@@ -4,7 +4,7 @@ export default async function handler(req, res) {
   const client = await clientPromise;
   const db = client.db("MemeMaster");
 
-  if (req.method === "POST") {
+  if (req.method === "GET") {
     try {
       const competitions = await db
         .collection("competitions")
@@ -28,7 +28,7 @@ export default async function handler(req, res) {
       res.status(500).json({ message: "Internal Server Error" });
     }
   } else {
-    res.setHeader("Allow", ["POST"]);
+    res.setHeader("Allow", ["GET"]);
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }

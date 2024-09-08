@@ -29,6 +29,7 @@ const CompetitionDetail = () => {
   const { days, hours, minutes, seconds } = useCountdown(data?.competitionDetail?.expireTime);
 
   const sendImage = async (e) => {
+    if (isWinner) return;
     if (!walletAdress) return errorNotify("Please Log in");
     try {
       await createMemeService(e, id, walletAdress);

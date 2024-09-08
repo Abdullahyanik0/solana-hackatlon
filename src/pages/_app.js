@@ -50,6 +50,11 @@ export default function MyApp(props) {
                           Home
                         </Text>
                       </Link>
+                      <Link className="hover:text-white" href="/feed">
+                        <Text className="sm:text-lg" fw={600}>
+                          Feed
+                        </Text>
+                      </Link>
 
                       <Link className="hover:text-white" href="/create">
                         <Text className="sm:text-lg" fw={600}>
